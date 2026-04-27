@@ -20,7 +20,7 @@ from tornado import gen
 
 class EndpointHandler(ManagementHandler):
     def initialize(self, app):
-        super(EndpointHandler, self).initialize(app)
+        pass
 
     def get(self, endpoint_name):
         if self.should_fail_with_auth_error() != AuthErrorStates.NONE:
@@ -92,55 +92,8 @@ class EndpointHandler(ManagementHandler):
 
     @gen.coroutine
     def delete(self, name):
-        if self.should_fail_with_auth_error() != AuthErrorStates.NONE:
-            self.fail_with_auth_error()
-            return
-
-        self.logger.log(logging.DEBUG, f"Processing DELETE for /endpoints/{name}")
-
-        try:
-            endpoints = self.tabpy_state.get_endpoints(name)
-            if len(endpoints) == 0:
-                self.error_out(404, f"endpoint {name} does not exist.")
-                self.finish()
-                return
-
-            # update state
-            try:
-                endpoint_info = self.tabpy_state.delete_endpoint(name)
-            except Exception as e:
-                self.error_out(400, f"Error when removing endpoint: {e.message}")
-                self.finish()
-                return
-
-            # delete files
-            if endpoint_info["type"] != "alias":
-                query_path = get_query_object_path(
-                    self.settings["state_file_path"], name, None
-                )
-                staging_path = query_path.replace("/query_objects/", "/staging/endpoints/")
-                try:
-                    yield self._delete_po_future(query_path)
-                    yield self._delete_po_future(staging_path)
-                except Exception as e:
-                    self.error_out(400, f"Error while deleting: {e}")
-                    self.finish()
-                    return
-
-            self.set_status(204)
-            self.finish()
-
-        except Exception as e:
-            err_msg = format_exception(e, "delete endpoint")
-            self.error_out(500, err_msg)
-            self.finish()
-
-        on_state_change(
-            self.settings, self.tabpy_state, self.python_service, self.logger
-        )
+        pass
 
     @gen.coroutine
     def _delete_po_future(self, delete_path):
-        future = STAGING_THREAD.submit(shutil.rmtree, delete_path)
-        ret = yield future
-        raise gen.Return(ret)
+        pass

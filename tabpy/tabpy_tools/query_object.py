@@ -74,18 +74,11 @@ class QueryObject(abc.ABC):
     def load(cls, path):
         """ Load query object from given path
         """
-        new_po = None
-        new_po = cls._load_local(path)
-
-        logger.info(f'Loaded query object "{type(new_po).__name__}" successfully')
-
-        return new_po
+        pass
 
     @classmethod
     def _load_local(cls, path):
-        path = os.path.abspath(os.path.expanduser(path))
-        with open(os.path.join(path, "pickle_archive"), "rb") as f:
-            return _cloudpickle.load(f)
+        pass
 
     @classmethod
     def _make_serializable(cls, result):

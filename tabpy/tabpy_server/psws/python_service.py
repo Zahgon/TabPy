@@ -85,39 +85,7 @@ class PythonService:
     def _load_object(
         self, object_uri, object_url, object_version, is_update, object_type
     ):
-        try:
-            logger.info(
-                f"Loading object:, URI={object_uri}, "
-                f"URL={object_url}, version={object_version}, "
-                f"is_updated={is_update}"
-            )
-            if object_type == "model":
-                po = QueryObject.load(object_url)
-            elif object_type == "alias":
-                po = object_url
-            else:
-                raise RuntimeError(f"Unknown object type: {object_type}")
-
-            self.query_objects[object_uri] = {
-                "version": object_version,
-                "type": object_type,
-                "endpoint_obj": po,
-                "status": "LoadSuccessful",
-                "last_error": None,
-            }
-        except Exception as e:
-            logger.exception(e)
-            logger.error(
-                f"Unable to load QueryObject: path={object_url}, " f"error={str(e)}"
-            )
-
-            self.query_objects[object_uri] = {
-                "version": object_version,
-                "type": object_type,
-                "endpoint_obj": None,
-                "status": "LoadFailed",
-                "last_error": f"Load failed: {str(e)}",
-            }
+        pass
 
     def load_object(
         self, object_uri, object_url, object_version, is_update, object_type

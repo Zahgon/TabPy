@@ -21,27 +21,7 @@ def SentimentAnalysis(_arg1, library="nltk"):
     more information on the function and how to use it please refer to
     tabpy-tools.md
     """
-    if not (isinstance(_arg1[0], str)):
-        raise TypeError
-
-    supportedLibraries = {"nltk", "textblob"}
-
-    library = library.lower()
-    if library not in supportedLibraries:
-        raise ValueError
-
-    scores = []
-    if library == "nltk":
-        sid = SentimentIntensityAnalyzer()
-        for text in _arg1:
-            sentimentResults = sid.polarity_scores(text)
-            score = sentimentResults["compound"]
-            scores.append(score)
-    elif library == "textblob":
-        for text in _arg1:
-            currScore = TextBlob(text)
-            scores.append(currScore.sentiment.polarity)
-    return scores
+    pass
 
 
 if __name__ == "__main__":

@@ -3,14 +3,11 @@ from datetime import datetime
 
 
 def from_epoch(value):
-    if isinstance(value, datetime):
-        return value
-    else:
-        return datetime.utcfromtimestamp(value)
+    pass
 
 
 def to_epoch(value):
-    return (value - datetime(1970, 1, 1)).total_seconds()
+    pass
 
 
 class Endpoint(RESTObject):
@@ -135,7 +132,7 @@ class RESTServiceClient:
 
     def get_info(self):
         """Returns the /info"""
-        return self.service_client.GET("info")
+        pass
 
     def query(self, name, *args, **kwargs):
         """Performs a query. Either specify *args or **kwargs, not both.
@@ -191,10 +188,7 @@ class RESTServiceClient:
 
             The name of the endpoint.
         """
-        ((name, attrs),) = self.service_client.GET("endpoints/" + endpoint_name).items()
-        endpoint = Endpoint.from_json(attrs)
-        endpoint.name = name
-        return endpoint
+        pass
 
     def add_endpoint(self, endpoint):
         """Adds an endpoint through the management API.
@@ -236,7 +230,7 @@ class RESTServiceClient:
 
             The endpoint to delete.
         """
-        self.service_client.DELETE("endpoints/" + endpoint_name)
+        pass
 
     def get_status(self):
         """Returns the status of the server.

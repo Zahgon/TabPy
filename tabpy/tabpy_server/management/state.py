@@ -30,16 +30,7 @@ def state_lock(func):
     """
     Mutex for changing PS state
     """
-
-    def wrapper(self, *args, **kwargs):
-        try:
-            _PS_STATE_LOCK.acquire()
-            return func(self, *args, **kwargs)
-        finally:
-            # ALWAYS RELEASE LOCK
-            _PS_STATE_LOCK.release()
-
-    return wrapper
+    pass
 
 
 def _get_root_path(state_path):
@@ -90,11 +81,7 @@ class TabPyState:
         Set the local ConfigParser manually.
         This new ConfigParser will be used as current state.
         """
-        if not isinstance(config, ConfigParser):
-            raise ValueError("Invalid config")
-        self.config = config
-        if _update:
-            self._write_state(logger)
+        pass
 
     def get_endpoints(self, name=None):
         """
@@ -394,68 +381,21 @@ class TabPyState:
         depending on this endpoint.
 
         """
-        if not name or name == "":
-            raise ValueError("Name of the endpoint must be a valid string.")
-        endpoints = self.get_endpoints()
-        if name not in endpoints:
-            raise ValueError(f"Endpoint {name} does not exist.")
-
-        endpoint_to_delete = endpoints[name]
-
-        # get dependencies and target
-        deps = set()
-        for endpoint_name in endpoints:
-            if endpoint_name != name:
-                deps_list = endpoints[endpoint_name].get("dependencies", [])
-                if name in deps_list:
-                    deps.add(endpoint_name)
-
-        # check if other endpoints are depending on this endpoint
-        if len(deps) > 0:
-            raise ValueError(
-                f"Cannot remove endpoint {name}, it is currently "
-                f"used by {list(deps)} endpoints."
-            )
-
-        del endpoints[name]
-
-        # delete the endpoint from state
-        try:
-            self._remove_config_option(
-                _QUERY_OBJECT_DOCSTRING, name, _update_revision=False
-            )
-            self._remove_config_option(_DEPLOYMENT_SECTION_NAME, name)
-
-            return endpoint_to_delete
-        except Exception as e:
-            logger.error(f"Unable to delete endpoint {e}")
-            raise ValueError(f"Unable to delete endpoint: {e}")
+        pass
 
     @property
     def name(self):
         """
         Returns the name of the TabPy service.
         """
-        name = None
-        try:
-            name = self._get_config_value(_SERVICE_INFO_SECTION_NAME, "Name")
-        except Exception as e:
-            logger.error(f"Unable to get name: {e}")
-        return name
+        pass
 
     @property
     def creation_time(self):
         """
         Returns the creation time of the TabPy service.
         """
-        creation_time = 0
-        try:
-            creation_time = self._get_config_value(
-                _SERVICE_INFO_SECTION_NAME, "Creation Time"
-            )
-        except Exception as e:
-            logger.error(f"Unable to get name: {e}")
-        return creation_time
+        pass
 
     @state_lock
     def set_name(self, name):
@@ -467,12 +407,7 @@ class TabPyState:
         name : str
             Name of TabPy service.
         """
-        if not isinstance(name, str):
-            raise ValueError("name must be a string.")
-        try:
-            self._set_config_value(_SERVICE_INFO_SECTION_NAME, "Name", name)
-        except Exception as e:
-            logger.error(f"Unable to set name: {e}")
+        pass
 
     def get_description(self):
         """
@@ -497,25 +432,13 @@ class TabPyState:
         description : str
             Description of TabPy service.
         """
-        if not isinstance(description, str):
-            raise ValueError("Description must be a string.")
-        try:
-            self._set_config_value(
-                _SERVICE_INFO_SECTION_NAME, "Description", description
-            )
-        except Exception as e:
-            logger.error(f"Unable to set description: {e}")
+        pass
 
     def get_revision_number(self):
         """
         Returns the revision number of this TabPy service.
         """
-        rev = -1
-        try:
-            rev = int(self._get_config_value(_META_SECTION_NAME, "Revision Number"))
-        except Exception as e:
-            logger.error(f"Unable to get revision number: {e}")
-        return rev
+        pass
 
     def get_access_control_allow_origin(self):
         """
@@ -561,14 +484,7 @@ class TabPyState:
         """
         Set the revision number of this TabPy service.
         """
-        if not isinstance(revision_number, int):
-            raise ValueError("revision number must be an int.")
-        try:
-            self._set_config_value(
-                _META_SECTION_NAME, "Revision Number", revision_number
-            )
-        except Exception as e:
-            logger.error(f"Unable to set revision number: {e}")
+        pass
 
     def _remove_config_option(
         self,
@@ -577,18 +493,10 @@ class TabPyState:
         logger=logging.getLogger(__name__),
         _update_revision=True,
     ):
-        if not self.config:
-            raise ValueError("State configuration not yet loaded.")
-        self.config.remove_option(section_name, option_name)
-        # update revision number
-        if _update_revision:
-            self._increase_revision_number()
-        self._write_state(logger=logger)
+        pass
 
     def _has_config_value(self, section_name, option_name):
-        if not self.config:
-            raise ValueError("State configuration not yet loaded.")
-        return self.config.has_option(section_name, option_name)
+        pass
 
     def _increase_revision_number(self):
         if not self.config:
@@ -618,9 +526,7 @@ class TabPyState:
         self._write_state(logger=logger)
 
     def _get_config_items(self, section_name):
-        if not self.config:
-            raise ValueError("State configuration not yet loaded.")
-        return self.config.items(section_name)
+        pass
 
     def _get_config_value(
         self, section_name, option_name, optional=False, default_value=None

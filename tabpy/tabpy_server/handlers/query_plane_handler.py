@@ -23,7 +23,7 @@ def _get_uuid():
 
 class QueryPlaneHandler(BaseHandler):
     def initialize(self, app):
-        super(QueryPlaneHandler, self).initialize(app)
+        pass
 
     def _query(self, po_name, data, uid, qry):
         """

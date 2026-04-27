@@ -5,4 +5,4 @@ class NoOpAuthHandler(ServerAuthHandler):
         pass
     
     def is_valid(self, token):
-        return ""
+        pass

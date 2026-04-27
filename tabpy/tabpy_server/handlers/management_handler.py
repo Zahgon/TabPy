@@ -14,33 +14,15 @@ from tabpy.tabpy_server.psws.callbacks import on_state_change
 
 
 def copy_from_local(localpath, remotepath, is_dir=False):
-    if is_dir:
-        if not os.path.exists(remotepath):
-            # remote folder does not exist
-            shutil.copytree(localpath, remotepath)
-        else:
-            # remote folder exists, copy each file
-            src_files = os.listdir(localpath)
-            for file_name in src_files:
-                full_file_name = os.path.join(localpath, file_name)
-                if os.path.isdir(full_file_name):
-                    # copy folder recursively
-                    full_remote_path = os.path.join(remotepath, file_name)
-                    shutil.copytree(full_file_name, full_remote_path)
-                else:
-                    # copy each file
-                    shutil.copy(full_file_name, remotepath)
-    else:
-        shutil.copy(localpath, remotepath)
+    pass
 
 
 class ManagementHandler(BaseHandler):
     def initialize(self, app):
-        super(ManagementHandler, self).initialize(app)
-        self.port = self.settings[SettingsParameters.Port]
+        pass
 
     def _get_protocol(self):
-        return "http://"
+        pass
 
     @gen.coroutine
     def _add_or_update_endpoint(self, action, name, version, request_data):

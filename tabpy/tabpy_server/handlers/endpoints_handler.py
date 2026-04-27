@@ -16,7 +16,7 @@ from tornado import gen
 
 class EndpointsHandler(ManagementHandler):
     def initialize(self, app):
-        super(EndpointsHandler, self).initialize(app)
+        pass
 
     def get(self):
         if self.should_fail_with_auth_error() != AuthErrorStates.NONE:

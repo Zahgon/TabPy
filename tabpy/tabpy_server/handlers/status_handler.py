@@ -5,7 +5,7 @@ from tabpy.tabpy_server.handlers.util import AuthErrorStates
 
 class StatusHandler(BaseHandler):
     def initialize(self, app):
-        super(StatusHandler, self).initialize(app)
+        pass
 
     def get(self):
         if self.should_fail_with_auth_error() != AuthErrorStates.NONE:

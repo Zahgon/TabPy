@@ -43,16 +43,7 @@ def grab_files(directory):
     """
     Generator that returns all files in a directory.
     """
-    if not os.path.isdir(directory):
-        return
-    else:
-        for name in os.listdir(directory):
-            full_path = os.path.join(directory, name)
-            if os.path.isdir(full_path):
-                for entry in grab_files(full_path):
-                    yield entry
-            elif os.path.isfile(full_path):
-                yield full_path
+    pass
 
 
 def cleanup_endpoint_files(

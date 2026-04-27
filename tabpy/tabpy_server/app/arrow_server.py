@@ -66,14 +66,7 @@ class FlightServer(pyarrow.flight.FlightServerBase):
                                          table.num_rows, data_size)
 
     def list_flights(self, context, criteria):
-        for key, table in self.flights.items():
-            if key[1] is not None:
-                descriptor = \
-                    pyarrow.flight.FlightDescriptor.for_command(key[1])
-            else:
-                descriptor = pyarrow.flight.FlightDescriptor.for_path(*key[2])
-
-            yield self._make_flight_info(key, descriptor, table)
+        pass
 
     def get_flight_info(self, context, descriptor):
         key = FlightServer.descriptor_to_key(descriptor)
@@ -84,55 +77,24 @@ class FlightServer(pyarrow.flight.FlightServerBase):
         raise KeyError('Flight not found.')
 
     def do_put(self, context, descriptor, reader, writer):
-        key = FlightServer.descriptor_to_key(descriptor)
-        logger.info(f"do_put: key={key}")
-        self.flights[key] = reader.read_all()
+        pass
 
     def do_get(self, context, ticket):
-        logger.info(f"do_get: ticket={ticket}")
-        key = ast.literal_eval(ticket.ticket.decode())
-        if key not in self.flights:
-            logger.warn(f"do_get: key={key} not found")
-            return None
-        logger.info(f"do_get: returning key={key}")
-        flight = self.flights.pop(key)
-        return pyarrow.flight.RecordBatchStream(flight)
+        pass
 
     def list_actions(self, context):
-        return iter([
-            ("getUniquePath", "Get a unique FlightDescriptor path to put data to."),
-            ("clear", "Clear the stored flights."),
-            ("shutdown", "Shut down this server."),
-        ])
+        pass
 
     def do_action(self, context, action):
-        logger.info(f"do_action: action={action.type}")
-        if action.type == "getUniquePath":
-            uniqueId = str(uuid.uuid4())
-            logger.info(f"getUniquePath id={uniqueId}")
-            yield uniqueId.encode('utf-8')
-        elif action.type == "clear":
-            self._clear()
-        elif action.type == "healthcheck":
-            pass
-        elif action.type == "shutdown":
-            self._clear()
-            yield pyarrow.flight.Result(pyarrow.py_buffer(b'Shutdown!'))
-            # Shut down on background thread to avoid blocking current
-            # request
-            threading.Thread(target=self._shutdown).start()
-        else:
-            raise KeyError("Unknown action {!r}".format(action.type))
+        pass
 
     def _clear(self):
         """Clear the stored flights."""
-        self.flights = {}
+        pass
 
     def _shutdown(self):
         """Shut down after a delay."""
-        logger.info("Server is shutting down...")
-        time.sleep(2)
-        self.shutdown()
+        pass
 
 def start(server):
     logger.info(f"Serving on {server.location}")

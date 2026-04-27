@@ -9,7 +9,7 @@ _QUERY_OBJECT_STAGING_FOLDER = "staging"
 
 class UploadDestinationHandler(ManagementHandler):
     def initialize(self, app):
-        super(UploadDestinationHandler, self).initialize(app)
+        pass
 
     def get(self):
         if self.should_fail_with_auth_error() != AuthErrorStates.NONE:

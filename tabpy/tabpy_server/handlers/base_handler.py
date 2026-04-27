@@ -20,7 +20,7 @@ class ContextLoggerWrapper:
 
     @staticmethod
     def _generate_call_id():
-        return str(uuid.uuid4())
+        pass
 
     def __init__(self, request: tornado.httputil.HTTPServerRequest):
         self.call_id = self._generate_call_id()
@@ -35,15 +35,10 @@ class ContextLoggerWrapper:
         Set HTTP(S) request for logger. Headers will be used to
         append request data as client information, Tableau user name, etc.
         """
-        self.remote_ip = request.remote_ip
-        self.method = request.method
-        self.url = request.full_url()
-
-        self.client = request.headers.get("TabPy-Client", None)
-        self.tableau_username = request.headers.get("TabPy-User", None)
+        pass
 
     def set_tabpy_username(self, tabpy_username: str):
-        self.tabpy_username = tabpy_username
+        pass
 
     def enable_context_logging(self, enable: bool):
         """
@@ -56,7 +51,7 @@ class ContextLoggerWrapper:
             every log entry for a request handler will have call ID
             with it.
         """
-        self.log_request_context = enable
+        pass
 
     def _log_context_info(self):
         if not self.log_request_context:
@@ -117,24 +112,7 @@ class ContextLoggerWrapper:
 
 class BaseHandler(tornado.web.RequestHandler):
     def initialize(self, app):
-        self.tabpy_state = app.tabpy_state
-        # set content type to application/json
-        self.set_header("Content-Type", "application/json")
-        self.protocol = self.settings[SettingsParameters.TransferProtocol]
-        self.port = self.settings[SettingsParameters.Port]
-        self.python_service = app.python_service
-        self.credentials = app.credentials
-        self.username = None
-        self.password = None
-        self.eval_timeout = self.settings[SettingsParameters.EvaluateTimeout]
-        self.max_request_size = app.max_request_size
-
-        self.logger = ContextLoggerWrapper(self.request)
-        self.logger.enable_context_logging(
-            app.settings[SettingsParameters.LogRequestContext]
-        )
-        self.logger.log(logging.DEBUG, "Checking if need to handle authentication")
-        self.auth_error = self.handle_authentication("v1")
+        pass
 
     def error_out(self, code, log_message, info=None):
         self.set_status(code)
@@ -194,47 +172,7 @@ class BaseHandler(tornado.web.RequestHandler):
         (True, '') as result of this function means authentication
         is not needed.
         """
-        if api_version not in self.settings[SettingsParameters.ApiVersions]:
-            self.logger.log(logging.CRITICAL, f'Unknown API version "{api_version}"')
-            return False, ""
-
-        version_settings = self.settings[SettingsParameters.ApiVersions][api_version]
-        if "features" not in version_settings:
-            self.logger.log(
-                logging.INFO, f'No features configured for API "{api_version}"'
-            )
-            return True, ""
-
-        features = version_settings["features"]
-        if (
-            "authentication" not in features
-            or not features["authentication"]["required"]
-        ):
-            self.logger.log(
-                logging.INFO,
-                "Authentication is not a required feature for API " f'"{api_version}"',
-            )
-            return True, ""
-
-        auth_feature = features["authentication"]
-        if "methods" not in auth_feature:
-            self.logger.log(
-                logging.INFO,
-                "Authentication method is not configured for API " f'"{api_version}"',
-            )
-
-        methods = auth_feature["methods"]
-        if "basic-auth" in auth_feature["methods"]:
-            return True, "basic-auth"
-        # Add new methods here...
-
-        # No known methods were found
-        self.logger.log(
-            logging.CRITICAL,
-            f'Unknown authentication method(s) "{methods}" are configured '
-            f'for API "{api_version}"',
-        )
-        return False, ""
+        pass
 
     def _get_basic_auth_credentials(self) -> bool:
         """
@@ -247,36 +185,7 @@ class BaseHandler(tornado.web.RequestHandler):
             True if valid credentials were found.
             False otherwise.
         """
-        self.logger.log(
-            logging.DEBUG, "Checking request headers for authentication data"
-        )
-        if "Authorization" not in self.request.headers:
-            self.logger.log(logging.INFO, "Authorization header not found")
-            return False
-
-        auth_header = self.request.headers["Authorization"]
-        auth_header_list = auth_header.split(" ")
-        if len(auth_header_list) != 2 or auth_header_list[0] != "Basic":
-            self.logger.log(
-                logging.ERROR, f'Unknown authentication method "{auth_header}"'
-            )
-            return False
-
-        try:
-            cred = base64.b64decode(auth_header_list[1]).decode("utf-8")
-        except (binascii.Error, UnicodeDecodeError) as ex:
-            self.logger.log(logging.CRITICAL, f"Cannot decode credentials: {str(ex)}")
-            return False
-
-        login_pwd = cred.split(":")
-        if len(login_pwd) != 2:
-            self.logger.log(logging.ERROR, "Invalid string in encoded credentials")
-            return False
-
-        self.username = login_pwd[0]
-        self.logger.set_tabpy_username(self.username)
-        self.password = login_pwd[1]
-        return True
+        pass
 
     def _get_credentials(self, method) -> bool:
         """
@@ -294,16 +203,7 @@ class BaseHandler(tornado.web.RequestHandler):
             True if valid credentials were found.
             False otherwise.
         """
-        if method == "basic-auth":
-            return self._get_basic_auth_credentials()
-        # Add new methods here...
-
-        # No known methods were found
-        self.logger.log(
-            logging.CRITICAL,
-            f'Unknown authentication method(s) "{method}" are configured ',
-        )
-        return False
+        pass
 
     def _validate_basic_auth_credentials(self) -> bool:
         """
@@ -317,22 +217,7 @@ class BaseHandler(tornado.web.RequestHandler):
             credentials[login] equal SHA3(pwd), False
             otherwise.
         """
-        login = self.username.lower()
-        self.logger.log(
-            logging.DEBUG, f'Validating credentials for user name "{login}"'
-        )
-        if login not in self.credentials:
-            self.logger.log(logging.ERROR, f'User name "{self.username}" not found')
-            return False
-
-        hashed_pwd = hash_password(login, self.password)
-        if self.credentials[login].lower() != hashed_pwd.lower():
-            self.logger.log(
-                logging.ERROR, f'Wrong password for user name "{self.username}"'
-            )
-            return False
-
-        return True
+        pass
 
     def _validate_credentials(self, method) -> bool:
         """
@@ -350,16 +235,7 @@ class BaseHandler(tornado.web.RequestHandler):
             True if credentials are valid.
             False otherwise.
         """
-        if method == "basic-auth":
-            return self._validate_basic_auth_credentials()
-        # Add new methods here...
-
-        # No known methods were found
-        self.logger.log(
-            logging.CRITICAL,
-            f'Unknown authentication method(s) "{method}" are configured ',
-        )
-        return False
+        pass
 
     def handle_authentication(self, api_version):
         """
@@ -379,28 +255,7 @@ class BaseHandler(tornado.web.RequestHandler):
             NotAuthorized if authenication is required and credentials are incorrect.
             NotRequired if authentication is not required but credentials are provided.
         """
-        self.logger.log(logging.DEBUG, "Handling authentication")
-        found, method = self._get_auth_method(api_version)
-        if not found:
-            return AuthErrorStates.NotAuthorized
-
-        if method == "":
-            if not self._get_basic_auth_credentials():
-                self.logger.log(logging.DEBUG,
-                                "authentication not required, username and password are none")
-                return AuthErrorStates.NONE
-            else:
-                self.logger.log(logging.DEBUG,
-                                "authentication not required, username and password are not none")
-                return AuthErrorStates.NotRequired
-
-        if not self._get_credentials(method):
-            return AuthErrorStates.NotAuthorized
-
-        if not self._validate_credentials(method):
-            return AuthErrorStates.NotAuthorized
-
-        return AuthErrorStates.NONE
+        pass
 
     def should_fail_with_auth_error(self):
         """

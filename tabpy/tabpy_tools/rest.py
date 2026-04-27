@@ -135,20 +135,7 @@ class RequestsNetworkWrapper:
         Issues a DELETE request to the URL with the data specified. Returns an
         object that is parsed from the response JSON.
         """
-        if data is not None:
-            data = json.dumps(data)
-
-        logger.info(f"DELETE {url} with {data}")
-
-        response = self.session.delete(url, data=data, timeout=timeout, auth=self.auth)
-
-        if response.status_code <= 499 and response.status_code >= 400:
-            raise RuntimeError(response.text)
-
-        if response.status_code not in (200, 201, 204):
-            raise RuntimeError(
-                f"Error with server response code: {response.status_code}"
-            )
+        pass
 
     def set_credentials(self, username, password):
         """
@@ -204,7 +191,7 @@ class ServiceClient:
 
     def DELETE(self, url, data=None, timeout=None):
         """Prepends self.endpoint to the url and issues a DELETE request."""
-        self.network_wrapper.DELETE(self.endpoint + url, data, timeout)
+        pass
 
     def set_credentials(self, username, password):
         """

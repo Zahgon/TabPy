@@ -26,15 +26,7 @@ def _check_endpoint_type(name):
 
 
 def _check_hostname(name):
-    _check_endpoint_type(name)
-    hostname_checker = compile(r"^^http(s)?://[\w.-]+(/)?(:\d+)?(/)?$")
-
-    if not hostname_checker.match(name):
-        raise ValueError(
-            f"endpoint name {name} should be in http(s)://<hostname>"
-            "[:<port>] and hostname may consist only of: "
-            "a-z, A-Z, 0-9, underscore and hyphens."
-        )
+    pass
 
 
 def _check_endpoint_name(name):
@@ -135,12 +127,11 @@ class Client:
     @property
     def query_timeout(self):
         """The timeout for queries in milliseconds."""
-        return self._service.query_timeout
+        pass
 
     @query_timeout.setter
     def query_timeout(self, value):
-        if type(value) in (int, float) and value > 0:
-            self._service.query_timeout = value
+        pass
 
     def query(self, name, *args, **kwargs):
         """Query an endpoint.
@@ -280,7 +271,7 @@ class Client:
         ----------
         name : str
             Endpoint name to remove'''
-        self._service.remove_endpoint(name)
+        pass
 
     def update_endpoint_info(self, name, description=None, schema=None, is_public=None):
         '''Updates description, schema, or is public for an existing endpoint
@@ -308,40 +299,7 @@ class Client:
             Tableau. If True, function will be visible to anyone on a site with this
             analytics extension configured
         '''
-
-        endpoint = self.get_endpoints().get(name)
-
-        if not endpoint:
-            raise RuntimeError(
-                f"No endpoint with that name ({name}) exists"
-                " Please select an existing endpoint to update"
-            )
-
-        if description is not None:
-            if type(description) is not str:
-                raise RuntimeError(
-                    f"Type of description must be string"
-                )
-            endpoint.description = description
-        if schema is not None:
-            if type(schema) is not dict:
-                raise RuntimeError(
-                    f"Type of schema must be dictionary"
-                )
-            endpoint.schema = schema
-        if is_public is not None:
-            if type(is_public) is not bool:
-                raise RuntimeError(
-                    f"Type of is_public must be bool"
-                )
-            endpoint.is_public = is_public
-
-        dest_path = self._get_endpoint_upload_destination()
-
-        endpoint.src_path = os.path.join(
-            dest_path, "endpoints", endpoint.name, str(endpoint.version)
-        )
-        self._service.set_endpoint(endpoint, should_update_version=False)
+        pass
 
     def _gen_endpoint(self, name, obj, description, version=1, schema=None, is_public=False):
         """Generates an endpoint dict.

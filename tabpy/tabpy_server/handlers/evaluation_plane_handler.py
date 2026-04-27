@@ -38,8 +38,7 @@ class EvaluationPlaneDisabledHandler(BaseHandler):
     """
 
     def initialize(self, executor, app):
-        super(EvaluationPlaneDisabledHandler, self).initialize(app)
-        self.executor = executor
+        pass
 
     @gen.coroutine
     def post(self):
@@ -60,13 +59,7 @@ class EvaluationPlaneHandler(BaseHandler):
     """
 
     def initialize(self, executor, app):
-        super(EvaluationPlaneHandler, self).initialize(app)
-        self.arrow_server = app.arrow_server
-        self.executor = executor
-        self._error_message_timeout = (
-            f"User defined script timed out. "
-            f"Timeout is set to {self.eval_timeout} s."
-        )
+        pass
 
     @gen.coroutine
     def _post_impl(self):
